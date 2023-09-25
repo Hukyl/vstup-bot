@@ -11,9 +11,9 @@ Each command has validation checks to ensure input data correctness.
 
 Even though the task did not require conversion from any currency other than UAH, the bot is easily adjustable to do so.
 
-## Building
+## Running
 
-The setup requires a .env file with set `VSTUP_TOKEN` Telegram bot token.
+The executable requires .env file with set `VSTUP_TOKEN` Telegram bot token.
 
 #### Building from source
 1. Download the go 1.21.1 version, the method is noted in [documentation](https://go.dev/doc/install).
@@ -24,3 +24,9 @@ The setup requires a .env file with set `VSTUP_TOKEN` Telegram bot token.
 4. Build and run the executable
 ```~/vstup-bot# go build -o ./vstup-bot && ./vstup-bot```
 
+
+#### Downloading from GitHub Actions
+1. Go to Actions section
+2. Click latest workflow run
+3. Download Linux binary (and test results, optionally)
+4. Run the executable
