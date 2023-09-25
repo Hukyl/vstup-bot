@@ -20,7 +20,7 @@ The executable requires .env file with set `VSTUP_TOKEN` Telegram bot token.
 2. Clone the repo.
 ```~# git clone https://github.com/Hukyl/vstup-bot.git```
 3. Get all required libraries, mentioned in the `go.mod`.
-```~/vstup-bot# go mod vendor```
+```~/vstup-bot# go get .```
 4. Build and run the executable
 ```~/vstup-bot# go build -o ./vstup-bot && ./vstup-bot```
 
