@@ -12,6 +12,7 @@ import (
 
 const userAgent = "Mozilla/5.0 (Windows NT 6.3; rv:36.0) Gecko/20100101 Firefox/36.0"
 
+const baseUrl string = "https://freecurrencyrates.com/en/"
 const fetchUrl string = "https://freecurrencyrates.com/en/%s-exchange-rate-calculator"
 const htmlRateSelector string = "input#rate-iso-%s"
 
@@ -43,6 +44,18 @@ func getExchangeRate(doc *html.Node, iso string) (float64, error) {
 		}
 	}
 	return 0, fmt.Errorf("attribute not found")
+}
+
+// GetAvailableCurrencies fetches a slice of all supported currencies in ISO format.
+func GetAvailableCurrencies() []string {
+	doc, _ := getDocument(baseUrl)
+	selector, _ := css.Parse("div#by_code > a.data-cell")
+	matches := selector.Select(doc)
+	isos := make([]string, 0, len(matches))
+	for _, attr := range matches {
+		isos = append(isos, attr.FirstChild.Data)
+	}
+	return isos
 }
 
 // CurrencyExists checks whether provided currency exists via a HTTP request.
