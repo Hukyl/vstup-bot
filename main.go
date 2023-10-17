@@ -14,6 +14,20 @@ import (
 	tu "github.com/mymmrac/telego/telegoutil"
 )
 
+// StartHandler is a command handler for "/start"
+// The command requires no arguments and greets the user.
+func StartHandler(bot *telego.Bot, update telego.Update) {
+	bot.SendMessage(tu.Message(
+		tu.ID(update.Message.Chat.ID),
+		fmt.Sprintf(
+			"Привіт, %s! Я - тестовий бот для обміну валют!\n\n"+
+				"Подивись список популярних валют за допомогою /list\n\n"+
+				"Спробуй, за допомогою /convert",
+			update.Message.From.FirstName,
+		),
+	))
+}
+
 // ListHandler is a command handler for "/list".
 // The command itself requires no arguments and provides a list of
 // the most popular (!) currencies.
@@ -98,6 +112,15 @@ func ExistsHandler(bot *telego.Bot, update telego.Update) {
 	))
 }
 
+// DefaultHandler handles any command that is not recognized
+// by the other handlers.
+func DefaultHandler(bot *telego.Bot, update telego.Update) {
+	bot.SendMessage(tu.Message(
+		tu.ID(update.Message.Chat.ID),
+		"Невідома команда, використай /start",
+	))
+}
+
 func main() {
 	err := godotenv.Load()
 	if err != nil {
@@ -107,7 +130,9 @@ func main() {
 
 	// Note: Please keep in mind that default logger may expose sensitive information,
 	// use in development only
-	bot, err := telego.NewBot(botToken, telego.WithDefaultDebugLogger())
+	bot, err := telego.NewBot(
+		botToken, telego.WithDefaultDebugLogger(),
+	)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -120,26 +145,11 @@ func main() {
 	defer bot.StopLongPolling()
 
 	// Command handlers
-	bh.Handle(func(bot *telego.Bot, update telego.Update) {
-		bot.SendMessage(tu.Message(
-			tu.ID(update.Message.Chat.ID),
-			fmt.Sprintf(
-				"Привіт, %s! Я - тестовий бот для обміну валют!\n\n"+
-					"Подивись список популярних валют за допомогою /list\n\n"+
-					"Спробуй, за допомогою /convert",
-				update.Message.From.FirstName,
-			),
-		))
-	}, th.CommandEqual("start"))
+	bh.Handle(StartHandler, th.CommandEqual("start"))
 	bh.Handle(ConvertHandler, th.CommandEqual("convert"))
 	bh.Handle(ListHandler, th.CommandEqual("list"))
 	bh.Handle(ExistsHandler, th.CommandEqual("exists"))
-	bh.Handle(func(bot *telego.Bot, update telego.Update) {
-		bot.SendMessage(tu.Message(
-			tu.ID(update.Message.Chat.ID),
-			"Невідома команда, використай /start",
-		))
-	}, th.AnyCommand())
+	bh.Handle(DefaultHandler, th.AnyCommand())
 
 	bh.Start()
 }
