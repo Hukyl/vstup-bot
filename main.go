@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"strconv"
 	"strings"
@@ -132,6 +133,7 @@ func main() {
 	// use in development only
 	bot, err := telego.NewBot(
 		botToken, telego.WithDefaultDebugLogger(),
+		telego.WithHTTPClient(&http.Client{}),
 	)
 	if err != nil {
 		log.Fatal(err)
